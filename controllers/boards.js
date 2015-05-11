@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 
 var mongoose = require('mongoose');
-var Board = require('../models/boards_model.js');
+var Board = require('../models/boards_model.js').boardModel;
 
 /* GET /boards listing */
 router.get('/', function(req, res, next){
@@ -51,5 +51,18 @@ router.delete('/:id', function(req, res, next){
     });
 });
 
+
+/* GET /board/:id/sensors all sensors*/
+router.get('/:id/sensors', function(req, res, next){
+    Board.findById(req.params.id, function(err, board){
+        if (err)
+            return next(err);
+        if(board)
+            res.json(board.sensors);
+        else
+            return next(err);
+
+    })
+});
 
 module.exports = router;

@@ -73,5 +73,5 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
+Board.initialize();
 module.exports = app;
