@@ -8,11 +8,12 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/swagger', function(req, res, next) {
-    var olddirname = __dirname;
-    __dirname = __dirname + '/../static/swagger-ui/dist/';
-    var path = __dirname + 'index.html';
-    res.render(path);
-    __dirname = olddirname;
+    if(req.query.url == null)
+        res.redirect('/swagger?url=' + req.protocol + '://' + req.get('host') + '/swagger.yaml');
+    else{
+        var path = __dirname + '/../node_modules/swagger-ui/dist/index.html';
+        res.render(path);
+    }
 });
 
 router.get('/swagger.yaml', function(req, res, next) {

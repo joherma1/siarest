@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')));
-app.use(express.static(path.join(__dirname, 'static/swagger-ui/dist/')));
+app.use(express.static(path.join(__dirname, 'node_modules/swagger-ui/dist')));
 
 // Enable CORS to allow read the swagger.yaml
 app.use(function(req, res, next) {
