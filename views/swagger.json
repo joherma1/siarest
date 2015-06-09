@@ -1,0 +1,171 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.0.1",
+        "title": "siarest",
+        "description": "API to communicate Alreg with SIA",
+        "termsOfService": "https://github.com/joherma1/sia",
+        "contact": {
+            "name": "Jose Antonio Hernandez Martinez",
+            "url": "https://github.com/joherma1",
+            "email": "joherma1@gmaill.com"
+        }
+    },
+    "paths": {
+        "/boards": {
+            "get": {
+                "tags": [
+                    "boards"
+                ],
+                "description": "Gets all the boards\n",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Board"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/boards/{boardId}": {
+            "get": {
+                "tags": [
+                    "boards"
+                ],
+                "description": "Get the board \"boardId\"",
+                "parameters": [
+                    {
+                        "name": "boardId",
+                        "in": "path",
+                        "description": "Board to fetch",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/Board"
+                        }
+                    }
+                }
+            }
+        },
+        "/boards/{boardId}/sensors": {
+            "get": {
+                "tags": [
+                    "boards"
+                ],
+                "description": "Get all the sensors from the \"boardId\"",
+                "parameters": [
+                    {
+                        "name": "boardId",
+                        "in": "path",
+                        "description": "Board to fetch",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Sensor"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/board/{boardId}/sensors/{sensorId}": {
+            "get": {
+                "tags": [
+                    "boards"
+                ],
+                "description": "Get the sensor \"sensorId\" from the \"boardId\"",
+                "parameters": [
+                    {
+                        "name": "boardId",
+                        "in": "path",
+                        "description": "Board to fetch",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "name": "sensorId",
+                        "in": "path",
+                        "description": "Sensor to fetch",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/Sensor"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Sensor": {
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Unique identifier representing the sensor"
+                },
+                "value": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Current sensor value"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the sensor."
+                }
+            }
+        },
+        "Board": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier representing the board."
+                },
+                "port": {
+                    "type": "string",
+                    "description": "Port to connect."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the board."
+                },
+                "sensors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Sensor"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "boards",
+            "description": "Everything to connect to the boards"
+        }
+    ]
+}

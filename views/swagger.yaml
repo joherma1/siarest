@@ -1,6 +1,3 @@
-# Example YAML to get you started quickly.
-# Be aware that YAML has indentation based scoping.
-# Code completion support is available so start typing for available options.
 swagger: '2.0'
 
 # This is your document metadata
@@ -20,6 +17,8 @@ paths:
   /boards:
     # This is a HTTP operation
     get:
+      tags:
+        - boards
       # Describe this verb here. Note: you can use markdown
       description: |
         Gets all the boards
@@ -37,6 +36,8 @@ paths:
               
   /boards/{boardId}:
     get:
+      tags:
+        - boards
       description: Get the board "boardId"
       parameters:
         - name: boardId 
@@ -53,6 +54,8 @@ paths:
       
   /boards/{boardId}/sensors:
     get:
+      tags:
+        - boards
       description: Get all the sensors from the "boardId"
       parameters:
         - name: boardId 
@@ -71,6 +74,8 @@ paths:
               
   /board/{boardId}/sensors/{sensorId}:
     get:
+      tags:
+        - boards
       description: Get the sensor "sensorId" from the "boardId" 
       parameters:
         - name: boardId 
@@ -120,4 +125,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Sensor'
+
+tags:
+  - name: boards
+    description: Everything to connect to the boards
       
