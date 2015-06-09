@@ -1,0 +1,123 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "0.0.1"
+  title: siarest
+  description: API to communicate Alreg with SIA
+  termsOfService: https://github.com/joherma1/sia
+  contact:
+    name: Jose Antonio Hernandez Martinez
+    url: https://github.com/joherma1
+    email: joherma1@gmaill.com
+
+# Describe your paths here
+paths:
+  # This is a path endpoint. Change it.
+  /boards:
+    # This is a HTTP operation
+    get:
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Gets all the boards
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type:  array
+            items:
+              $ref: '#/definitions/Board'
+              
+  /boards/{boardId}:
+    get:
+      description: Get the board "boardId"
+      parameters:
+        - name: boardId 
+          in: path
+          description: Board to fetch
+          required: true
+          type: number
+          format: double
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Board'
+      
+  /boards/{boardId}/sensors:
+    get:
+      description: Get all the sensors from the "boardId"
+      parameters:
+        - name: boardId 
+          in: path
+          description: Board to fetch
+          required: true
+          type: number
+          format: double
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Sensor'
+              
+  /board/{boardId}/sensors/{sensorId}:
+    get:
+      description: Get the sensor "sensorId" from the "boardId" 
+      parameters:
+        - name: boardId 
+          in: path
+          description: Board to fetch
+          required: true
+          type: number
+          format: double     
+        - name: sensorId 
+          in: path
+          description: Sensor to fetch
+          required: true
+          type: number
+          format: double
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Sensor'
+    
+          
+definitions:
+  Sensor:
+    properties:
+      code:
+        type: string
+        description: Unique identifier representing the sensor
+      value:
+        type: number
+        format: float
+        description: Current sensor value
+      description:
+        type: string
+        description: Description of the sensor.
+  Board:
+    properties:
+      id:
+        type: string
+        description: Unique identifier representing the board.
+      port:
+        type: string
+        description: Port to connect.
+      description: 
+        type: string
+        description: Description of the board.
+      sensors:
+        type: array
+        items:
+          $ref: '#/definitions/Sensor'
+      

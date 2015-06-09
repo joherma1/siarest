@@ -29,6 +29,9 @@ var app = express(); // create our app w/ express
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+//to render html
+app.engine('html', require('ejs').renderFile);
+
 //MIDDLEWARES
 // uncomment after placing your favicon in /static
 //app.use(favicon(__dirname + '/static/favicon.ico'));
@@ -73,5 +76,5 @@ app.use(function(err, req, res, next) {
   });
 });
 
-Board.initialize();
+//Board.initialize();
 module.exports = app;
