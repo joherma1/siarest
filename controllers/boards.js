@@ -35,7 +35,8 @@ router.post('/', function(req, res, next) {
 
 /* PUT /boards/:id */
 router.put('/:id', function(req, res, next) {
-    Board.findByIdAndUpdate(req.params.id, req.body, function(err, update){
+    var options = {new:true};
+        Board.findByIdAndUpdate(req.params.id, req.body, options, function(err, update){
         if(err)
             return next(err);
         res.json(update);
