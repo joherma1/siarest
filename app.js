@@ -85,5 +85,5 @@ app.use(function(err, req, res, next) {
   });
 });
 
-Board.initialize();
+//Board.initialize();
 module.exports = app;

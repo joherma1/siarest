@@ -4,12 +4,11 @@
 var express = require('express');
 var router = express.Router();
 
-var mongoose = require('mongoose');
 var Board = require('../models/boards_model.js').boardModel;
 
 /* GET /boards listing */
 router.get('/', function(req, res, next){
-    Board.find(function(err, boards){
+    Board.find({}).select('_id id port description').exec(function(err, boards){
         if(err)
             return next(err);
         res.json(boards);
@@ -55,7 +54,7 @@ router.delete('/:id', function(req, res, next){
 
 /* GET /board/:id/sensors all sensors*/
 router.get('/:id/sensors', function(req, res, next){
-    Board.findById(req.params.id, function(err, board){
+    Board.findById(req.params.id).select('sensors').exec(function(err, board){
         if (err)
             return next(err);
         if(board)
@@ -63,7 +62,30 @@ router.get('/:id/sensors', function(req, res, next){
         else
             return next(err);
 
-    })
+    });
+});
+
+/*GET /board/:boardId/sensors/:sensorID*/
+router.get('/:boardId/sensors/:sensorId', function(req, res, next){
+    Board.find({}).where({"_id":req.params.boardId, "sensors._id" : req.params.sensorId}).exec(function(err, board){
+        if (err)
+            return next(err);
+        if(board)
+            res.json(board.sensors);
+        else
+            return next(err);
+
+    });
+    //Board.findById(req.params.boardId).select('sensors').exec(function(err, board){
+    //    if (err)
+    //        return next(err);
+    //    if(board)
+    //        res.json(board.sensors.id(req.params.sensorId).select('value'));
+    //    else
+    //        return next(err);
+    //
+    //});
+
 });
 
 module.exports = router;
