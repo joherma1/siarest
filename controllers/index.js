@@ -49,16 +49,6 @@ router.get('/swagger.json', function(req, res, next) {
         }
     };
 
-    //res.sendFile('swagger.json', options, function (err) {
-    //    if (err) {
-    //        console.log(err);
-    //        res.status(err.status).end();
-    //    }
-    //    else {
-    //        console.log('swagger.yaml');
-    //    }
-    //});
-
     var nativeObject = YAML.load(options.root + 'swagger.yaml');
     res.json(nativeObject);
 });

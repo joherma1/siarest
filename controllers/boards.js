@@ -66,26 +66,33 @@ router.get('/:id/sensors', function(req, res, next){
 });
 
 /*GET /board/:boardId/sensors/:sensorID*/
-router.get('/:boardId/sensors/:sensorId', function(req, res, next){
-    Board.find({}).where({"_id":req.params.boardId, "sensors._id" : req.params.sensorId}).exec(function(err, board){
+router.get('/:boardId/sensors/:sensorId', function (req, res, next) {
+    Board.find({}).where({"_id": req.params.boardId}).exec(function (err, board) {
         if (err)
             return next(err);
-        if(board)
-            res.json(board.sensors);
+        if (board) {
+            var sensor = board[0].sensors.id(req.params.sensorId);
+            res.json(sensor);
+        }
         else
             return next(err);
-
     });
-    //Board.findById(req.params.boardId).select('sensors').exec(function(err, board){
-    //    if (err)
-    //        return next(err);
-    //    if(board)
-    //        res.json(board.sensors.id(req.params.sensorId).select('value'));
-    //    else
-    //        return next(err);
-    //
-    //});
+});
 
+/*GET /board/:boardId/sensors/:sensorID/value */
+/*Retrieve just the value */
+router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
+    Board.find({}).where({"_id": req.params.boardId}).exec(function (err, board) {
+        if (err)
+            return next(err);
+        if (board) {
+            var sensor = board[0].sensors.id(req.params.sensorId);
+            var response = {"value": sensor.value};
+            res.json(response);
+        }
+        else
+            return next(err);
+    });
 });
 
 module.exports = router;

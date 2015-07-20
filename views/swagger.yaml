@@ -72,7 +72,7 @@ paths:
             items:
               $ref: '#/definitions/Sensor'
               
-  /board/{boardId}/sensors/{sensorId}:
+  /boards/{boardId}/sensors/{sensorId}:
     get:
       tags:
         - boards
@@ -95,6 +95,31 @@ paths:
           description: Successful response
           schema:
             $ref: '#/definitions/Sensor'
+            
+  /boards/{boardId}/sensors/{sensorId}/value:
+    get:
+      tags:
+        - boards
+      description: Get just the sensor "sensorId" value from the "boardId" 
+      parameters:
+        - name: boardId 
+          in: path
+          description: Board to fetch
+          required: true
+          type: number
+          format: double     
+        - name: sensorId 
+          in: path
+          description: Sensor to fetch
+          required: true
+          type: number
+          format: double
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: number
+            format: double
     
           
 definitions:
