@@ -7,7 +7,9 @@ var bodyParser = require('body-parser');
 
 //Database mongod --dbpath ./data/
 var mongoose = require('mongoose');// mongoose for mongodb
-mongoose.connect('mongodb://localhost/siarest', function(err) {
+mongoose.connect('mongodb://' + (process.env.MONGO_PORT_27017_TCP_ADDR || 'localhost')
+    + ':' + (process.env.MONGO_PORT_27017_TCP_PORT || '27017') +
+    '/siarest', function(err) {
   if(err) {
     console.log('connection error', err);
   } else {
