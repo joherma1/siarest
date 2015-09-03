@@ -5,4 +5,5 @@ node:
   links:
     - mongo
 mongo:
-  image: mongo
+  #image: mongo
+  build: mongo/.
