@@ -17,3 +17,6 @@ target/
 
 #Mongo
 data/
+
+#npm
+node_modules/
