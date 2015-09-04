@@ -1,0 +1,8 @@
+node:
+  image: joherma1/rpi-siarest:0.2
+  ports:
+    - "80:3000"
+  links:
+    - mongo
+mongo:
+  image: joherma1/rpi-mongodb:0.2
