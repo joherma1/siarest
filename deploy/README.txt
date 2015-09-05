@@ -18,7 +18,10 @@ docker-compose logs
 
 
 #Attach ssh into container
-docker exec -it siarest bash
+docker exec -it siarest /bin/bash
+#Debug
+docker run --rm -it [container_step] /bin/bash
+
 #Backup sd
 sudo dd if=/dev/rdisk1 bs=1m | gzip > ~/Desktop/pi.gz
 gzip -dc ~/Desktop/pi.gz | sudo dd of=/dev/rdisk1 bs=1m

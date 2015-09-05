@@ -11,9 +11,9 @@ mongoose.connect('mongodb://' + (process.env.MONGO_PORT_27017_TCP_ADDR || 'local
     + ':' + (process.env.MONGO_PORT_27017_TCP_PORT || '27017') +
     '/siarest', function(err) {
   if(err) {
-    console.log('connection error', err);
+    console.error('[Database] Connection error', err);
   } else {
-    console.log('connection successful');
+    console.log('[Database] Connection successful');
   }
 });
 var Board = require('./models/boards_model.js');
@@ -87,5 +87,5 @@ app.use(function(err, req, res, next) {
   });
 });
 
-Board.initialize();
+//Board.initialize();
 module.exports = app;
