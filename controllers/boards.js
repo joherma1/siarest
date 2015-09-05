@@ -89,6 +89,10 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
             if (err)
                 return next(err);
             if (board) {
+                // --------------------
+                // TODO
+                // Promisify
+                // --------------------
                 var sensor = board[0].sensors.id(req.params.sensorId);
                 if ((Date.now() - sensor.timestamp) / 1000 < 60) {
                     var response = {"value": sensor.value};
@@ -97,15 +101,16 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                     if (sensor.protocol === "USB") {
                         var serialPort = new SerialPort(sensor.uri, {
                             baudrate: 9600,
-                            parser: serialport.parsers.readline(String.fromCharCode(4)) //AlReg EOT code
+                            parser: serialport.parsers.readline(String.fromCharCode(4)) //AlReg EOT code, end of command
                         });
                         serialPort.on("open", function (error) {
                                 if (error) {
-                                    console.error("Failed to open: " + error);
+                                    console.error("[ino] Failed to open: " + error);
                                 } else {
-                                    console.log("[ino] Connection opened with: " + board[0].id);
-                                    var messageByte = hexToByte("6d" + sensor.code);//0x6D m select sensor
-                                    console.log("[ino] Select sensor: 6d " + sensor.code + " to board " + board[0].id);
+                                    console.log("[ino] Connection opened with board " + board[0].id);
+                                    // Message sent to arduino in binary, as Bytes
+                                    var messageByte =  new Buffer("6d" + sensor.code, 'hex');//0x6D m select sensor
+                                    console.log("[ino] Select sensor: 6d " + sensor.code + " from board " + board[0].id);
                                     serialPort.write(messageByte, function () {
                                         serialPort.drain(function (error, results) {
                                                 if (error) {
@@ -115,8 +120,7 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                                                         if (data != 1)
                                                             console.error("Unable to select the sensor");
                                                         else {
-                                                            //get value
-                                                            console.log("[ino] Get value: 6e " + sensor.code + " to board " + board[0].id);
+                                                            console.log("[ino] Get value: 6e " + sensor.code + " from board " + board[0].id);
                                                             serialPort.write(new Buffer("6e", 'hex'), function () {
                                                                 serialPort.drain(function (error, results) {
                                                                     serialPort.once('data', function (data) {
@@ -127,7 +131,7 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                                                                             if (error)
                                                                                 console.error("Error closing the port: " + error);
                                                                             else
-                                                                                console.log("[ino] Connection closed with " + board[0].id);
+                                                                                console.log("[ino] Connection closed with board" + board[0].id);
                                                                         });
                                                                     });
                                                                 });
@@ -140,9 +144,10 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                                         ;
                                     });
                                 }
-                            }
-                        )
-                        ;
+                            });
+                        serialPort.on("error", function(err){
+                            res.status(500).send({error: "[ino] " + err});
+                        });
                     }
                 }
             }
@@ -152,14 +157,5 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
     )
     ;
 });
-
-function hexToByte(input) {
-    return new Buffer(input, 'hex');
-    //var result = [];
-    //for(var i = 0; i < input.length; i=i+2){
-    //    result.push(new Buffer(parseInt(input.substring(i,i+2),16)));
-    //}
-    //return result;
-}
 
 module.exports = router;
