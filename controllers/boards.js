@@ -11,7 +11,7 @@ var Board = require('../models/boards_model.js').boardModel;
 
 /* GET /boards listing */
 router.get('/', function (req, res, next) {
-    Board.find({}).select('_id id port description').exec(function (err, boards) {
+    Board.find({}).select('_id id protocol uri description').exec(function (err, boards) {
         if (err)
             return next(err);
         res.json(boards);
@@ -98,8 +98,8 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                     var response = {"value": sensor.value};
                     res.json(response);
                 } else {
-                    if (sensor.protocol === "USB") {
-                        var serialPort = new SerialPort(sensor.uri, {
+                    if (board[0].protocol === "USB") {
+                        var serialPort = new SerialPort(board[0].uri, {
                             baudrate: 9600,
                             parser: serialport.parsers.readline(String.fromCharCode(4)) //AlReg EOT code, end of command
                         });
@@ -148,6 +148,9 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                         serialPort.on("error", function(err){
                             res.status(500).send({error: "[ino] " + err});
                         });
+                    }
+                    else{
+                        res.status(404).send({error: "Invalid sensor"});
                     }
                 }
             }

@@ -8,9 +8,7 @@ module.exports.schema = new Schema({
     code: { type: String, unique: true},
     value: Number,
     description: String,
-    timestamp: Date,
-    protocol: String,
-    uri: String
+    timestamp: Date
 });
 
 module.exports.model = mongoose.model('Sensor', this.schema);
