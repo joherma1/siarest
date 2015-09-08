@@ -21,8 +21,8 @@ docker build -t joherma1/siarest:0.1 .
 docker build --no-cache -t joherma1/siarest:0.1 .
 
 #Run
-docker run --name mongo-sia -d mongo
-docker run -p 8080:3000 --name node-sia --link mongo-sia:mongo -d joherma1/siarest:0.1
+docker run -p 27017:27017 --name mongo-sia -d mongo
+docker run --device=/dev/ttyACM0:/dev/cu.usbmodem1411 -p 3000:3000 --name node-sia --link mongo-sia:mongo -d joherma1/siarest:0.1
 
 
 #Docker compose
@@ -40,3 +40,4 @@ docker rm $(docker ps -a -q)
 #DEBUG from layer with terminal
 docker run --rm -it <id_last_working_layer> bash -il
 #Run a command in a running container
+docker exec -it [container-id] bash
