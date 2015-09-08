@@ -23,7 +23,7 @@ module.exports.initialize = function(){
     });
 
     //Create the instance
-    var board = new BoardModel({id:1, protocol: "USB", uri: "/dev/ttyACM0"});
+    var board = new BoardModel({id:1, protocol: "USB", uri: "/dev/cu.usbmodem1411"});
     var sensor1 = new Sensor.model({code: '282ddbaf020000b0', value: 4.5,
         description: "Test Sensor", timestamp: Date.now()});
 
