@@ -20,11 +20,12 @@ router.get('/', function (req, res, next) {
 
 /* GET /boards/:id */
 router.get('/:id', function (req, res, next) {
-    Board.findById(req.params.id, function (err, board) {
+    //Use the mongo native driver
+    Board.find({id: req.params.id}, function (err, board) {
         if (err)
             return next(err);
-        res.json(board);
-    })
+        res.json(board[0]);
+    });
 });
 
 /* POST /boards */
@@ -37,17 +38,18 @@ router.post('/', function (req, res, next) {
 
 /* PUT /boards/:id */
 router.put('/:id', function (req, res, next) {
+    var conditions = {id: req.params.id};
     var options = {new: true};
-    Board.findByIdAndUpdate(req.params.id, req.body, options, function (err, update) {
+    Board.update(conditions, req.body, options, function (err, numAffected) {
         if (err)
             return next(err);
-        res.json(update);
+        res.json(numAffected);
     });
 });
 
 /* DELETE /boards/:id */
 router.delete('/:id', function (req, res, next) {
-    Board.findByIdAndRemove(req.params.id, req.body, function (err, del) {
+    Board.remove({id: req.params.id}, function (err, del) {
         if (err)
             return next(err);
         res.json(del);
@@ -57,35 +59,41 @@ router.delete('/:id', function (req, res, next) {
 
 /* GET /board/:id/sensors all sensors*/
 router.get('/:id/sensors', function (req, res, next) {
-    Board.findById(req.params.id).select('sensors').exec(function (err, board) {
+    Board.find({id: req.params.id}, function (err, board) {
         if (err)
             return next(err);
         if (board)
-            res.json(board.sensors);
+            res.json(board[0].sensors);
         else
             return next(err);
-
     });
 });
 
 /*GET /board/:boardId/sensors/:sensorID*/
 router.get('/:boardId/sensors/:sensorId', function (req, res, next) {
-    Board.find({}).where({"_id": req.params.boardId}).exec(function (err, board) {
-        if (err)
-            return next(err);
-        if (board) {
-            var sensor = board[0].sensors.id(req.params.sensorId);
-            res.json(sensor);
-        }
-        else
-            return next(err);
-    });
+    //Native driver
+    //db.boards.find({$and: [{id:"2"}, {"sensors.code": "282ddbaf020000b0"}]},{"sensors":1});
+    //Using mongoose query
+    Board.find({}).where('id').equals(req.params.boardId)
+        .where('sensors.code').equals(req.params.sensorId)
+        .select('sensors')
+        .exec(function (err, results) {
+            if (err)
+                return next(err);
+            if (results) {
+                res.json(results[0].sensors[0]);
+            }
+            else
+                return next(err);
+        });
 });
 
 /*GET /board/:boardId/sensors/:sensorID/value */
 /*Retrieve just the value */
 router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
-    Board.find({}).where({"_id": req.params.boardId}).exec(function (err, board) {
+    Board.find({}).where('id').equals(req.params.boardId)
+        .where('sensors.code').equals(req.params.sensorId)
+        .exec(function (err, board) {
             if (err)
                 return next(err);
             if (board) {
@@ -93,7 +101,7 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                 // TODO
                 // Promisify
                 // --------------------
-                var sensor = board[0].sensors.id(req.params.sensorId);
+                var sensor = board[0].sensors[0];
                 if ((Date.now() - sensor.timestamp) / 1000 < 60) {
                     var response = {"value": sensor.value};
                     res.json(response);
@@ -104,52 +112,52 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                             parser: serialport.parsers.readline(String.fromCharCode(4)) //AlReg EOT code, end of command
                         });
                         serialPort.on("open", function (error) {
-                                if (error) {
-                                    console.error("[ino] Failed to open: " + error);
-                                } else {
-                                    console.log("[ino] Connection opened with board " + board[0].id);
-                                    // Message sent to arduino in binary, as Bytes
-                                    var messageByte =  new Buffer("6d" + sensor.code, 'hex');//0x6D m select sensor
-                                    console.log("[ino] Select sensor: 6d " + sensor.code + " from board " + board[0].id);
-                                    serialPort.write(messageByte, function () {
-                                        serialPort.drain(function (error, results) {
-                                                if (error) {
-                                                    console.error("error writing " + error);
-                                                } else {
-                                                    serialPort.once('data', function (data) { //wait only once
-                                                        if (data != 1)
-                                                            console.error("Unable to select the sensor");
-                                                        else {
-                                                            console.log("[ino] Get value: 6e " + sensor.code + " from board " + board[0].id);
-                                                            serialPort.write(new Buffer("6e", 'hex'), function () {
-                                                                serialPort.drain(function (error, results) {
-                                                                    serialPort.once('data', function (data) {
-                                                                        var response = {"value": parseFloat(data)};
-                                                                        boardModel.saveValue(board[0], sensor, data);
-                                                                        res.json(response);
-                                                                        serialPort.close(function (error) {
-                                                                            if (error)
-                                                                                console.error("Error closing the port: " + error);
-                                                                            else
-                                                                                console.log("[ino] Connection closed with board" + board[0].id);
-                                                                        });
+                            if (error) {
+                                console.error("[ino] Failed to open: " + error);
+                            } else {
+                                console.log("[ino] Connection opened with board " + board[0].id);
+                                // Message sent to arduino in binary, as Bytes
+                                var messageByte = new Buffer("6d" + sensor.code, 'hex');//0x6D m select sensor
+                                console.log("[ino] Select sensor: 6d " + sensor.code + " from board " + board[0].id);
+                                serialPort.write(messageByte, function () {
+                                    serialPort.drain(function (error, results) {
+                                            if (error) {
+                                                console.error("error writing " + error);
+                                            } else {
+                                                serialPort.once('data', function (data) { //wait only once
+                                                    if (data != 1)
+                                                        console.error("Unable to select the sensor");
+                                                    else {
+                                                        console.log("[ino] Get value: 6e " + sensor.code + " from board " + board[0].id);
+                                                        serialPort.write(new Buffer("6e", 'hex'), function () {
+                                                            serialPort.drain(function (error, results) {
+                                                                serialPort.once('data', function (data) {
+                                                                    var response = {"value": parseFloat(data)};
+                                                                    boardModel.saveValue(board[0], sensor, data);
+                                                                    res.json(response);
+                                                                    serialPort.close(function (error) {
+                                                                        if (error)
+                                                                            console.error("Error closing the port: " + error);
+                                                                        else
+                                                                            console.log("[ino] Connection closed with board" + board[0].id);
                                                                     });
                                                                 });
                                                             });
-                                                        }
-                                                    });
-                                                }
+                                                        });
+                                                    }
+                                                });
                                             }
-                                        )
-                                        ;
-                                    });
-                                }
-                            });
-                        serialPort.on("error", function(err){
+                                        }
+                                    )
+                                    ;
+                                });
+                            }
+                        });
+                        serialPort.on("error", function (err) {
                             res.status(500).send({error: "[ino] " + err});
                         });
                     }
-                    else{
+                    else {
                         res.status(404).send({error: "Invalid sensor"});
                     }
                 }
