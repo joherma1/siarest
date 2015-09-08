@@ -40,3 +40,4 @@ docker rm $(docker ps -a -q)
 #DEBUG from layer with terminal
 docker run --rm -it <id_last_working_layer> bash -il
 #Run a command in a running container
+docker exec -it [container-id] bash
