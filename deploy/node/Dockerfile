@@ -1,9 +1,6 @@
 FROM resin/raspberrypi-node
 MAINTAINER Jose Antonio Hernandez Martinez <joherma1@gmail.com>
 
-RUN apt-get update && apt-get install -y \
-    unzip
-
 RUN mkdir -p /opt/siarest/src && \
     git clone --depth=1 https://github.com/joherma1/siarest.git /opt/siarest/src
 

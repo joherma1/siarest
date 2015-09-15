@@ -17,3 +17,7 @@ cd node-v0.10.2
 make
 sudo make install
 
+
+#Tests
+npm test
+node spec/jasmine-runner
