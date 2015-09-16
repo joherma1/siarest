@@ -5,11 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var config = require('./config/properties');
+
 //Database mongod --dbpath ./data/
 var mongoose = require('mongoose');// mongoose for mongodb
-mongoose.connect('mongodb://' + (process.env.MONGO_PORT_27017_TCP_ADDR || 'localhost')
-    + ':' + (process.env.MONGO_PORT_27017_TCP_PORT || '27017') +
-    '/siarest', function(err) {
+mongoose.connect(config.db.mongodb, function(err) {
   if(err) {
     console.error('[Database] Connection error', err);
   } else {
@@ -23,9 +23,6 @@ var users = require('./controllers/users');
 var boards = require('./controllers/boards');
 
 var app = express(); // create our app w/ express
-
-//Database
-//mongod --dbpath ./data/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

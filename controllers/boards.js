@@ -8,6 +8,7 @@ var SerialPort = serialport.SerialPort;
 var boardModel = require("../models/boards_model");
 
 var Board = require('../models/boards_model.js').boardModel;
+var BoardDAO = require('../models/boards_model.js');
 
 /* GET /boards listing */
 router.get('/', function (req, res, next) {
@@ -24,16 +25,23 @@ router.get('/:id', function (req, res, next) {
     Board.find({id: req.params.id}, function (err, board) {
         if (err)
             return next(err);
-        res.json(board[0]);
+        if (board[0] == null)
+            res.status(404).send("Board not found");
+        else
+            res.json(board[0]);
     });
 });
 
 /* POST /boards */
 router.post('/', function (req, res, next) {
-    Board.create(req.body, function (err, post) {
-        if (err) return next(err);
-        res.json(post);
-    });
+    if (req && req.body && req.body.id) {
+        Board.create(req.body, function (err, post) {
+            if (err) return next(err);
+            res.status(201).json(post);
+        });
+    } else {
+        res.status(400).send();
+    }
 });
 
 /* PUT /boards/:id */
@@ -71,21 +79,12 @@ router.get('/:id/sensors', function (req, res, next) {
 
 /*GET /board/:boardId/sensors/:sensorID*/
 router.get('/:boardId/sensors/:sensorId', function (req, res, next) {
-    //Native driver
-    //db.boards.find({$and: [{id:"2"}, {"sensors.code": "282ddbaf020000b0"}]},{"sensors":1});
-    //Using mongoose query
-    Board.find({}).where('id').equals(req.params.boardId)
-        .where('sensors.code').equals(req.params.sensorId)
-        .select('sensors')
-        .exec(function (err, results) {
-            if (err)
-                return next(err);
-            if (results) {
-                res.json(results[0].sensors[0]);
-            }
-            else
-                return next(err);
-        });
+    BoardDAO.findSensorByBoardAndId(req.params.boardId, req.params.sensorId, function (err, result) {
+        if (err)
+            next(err);
+        else
+            res.json(result);
+    });
 });
 
 /*GET /board/:boardId/sensors/:sensorID/value */
