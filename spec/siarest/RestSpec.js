@@ -132,5 +132,4 @@ describe('Rest API Test Suite', function () {
         });
 
     });
-    desc
 });
