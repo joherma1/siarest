@@ -3,47 +3,38 @@
  * Executed before the specs
  */
 var config = require('../../../config/properties-test');
-var mongoose = require('mongoose');
-var BoardModel = require('../../../models/boards_model');
+var Sensor = require('../../../models/sensors_model');
+var mongoose = require("mongoose");
+var BoardSchema = require("../../../models/boards_model").boardModel;
 
 beforeEach(function (done) {
-    function connectDB(callback) {
-        //Does not exist mongoose mock, create and remove siarest-test
-        mongoose.connect(config.db.mongodb, function (err) {
-            if (err) {
-                console.error('[Database] Connection error', err);
-                callback(err);
-            } else {
-                callback();
-            }
-        });
-    }
-
-    function clearDB(callback) {
-        for (var i in mongoose.connection.collections) {
-            mongoose.connection.collections[i].remove(function (err) {
-                callback();
-            });
+    mongoose.connect(config.db.mongodb, function (err) {
+        if (err) {
+            console.error('[Database] Connection error', err);
         }
-
-    }
-
-    function initializeDB(callback){
-        BoardModel.initialize(function (err) {
-            callback();
-        });
-    }
-
-    connectDB(function (err) {
-        //TODO
-        //Promisify
-        if (err)
-            throw err;
         else {
-            clearDB(function(){
-                initializeDB(function(){
-                    done();
-                });
+            mongoose.connection.db.dropDatabase(function (err, result) {
+                if (err) {
+                    console.error('[Database] Error droping database', err);
+                }
+                else {
+                    //Create the instance
+                    var BoardModel = mongoose.model('Board', BoardSchema);
+                    var board = new BoardModel({id: 1, protocol: "USB", uri: "/dev/cu.usbmodem1411"});
+                    var sensor1 = new Sensor.model({
+                        code: '282ddbaf020000b0', value: 4.5,
+                        description: "Test Sensor", timestamp: Date.now()
+                    });
+
+                    //Add item to the array
+                    board.sensors.push(sensor1);
+                    board.save(function (err) {
+                        if (err)
+                            console.error('[Database] Error initializing', err);
+                        else
+                            done();
+                    });
+                }
             });
         }
     });
@@ -54,7 +45,7 @@ afterEach(function (done) {
     done();
 });
 
-afterAll(function(done){
+afterAll(function (done) {
     mongoose.connect(config.db.mongodb, function () {
         mongoose.connection.db.dropDatabase();
         done();
