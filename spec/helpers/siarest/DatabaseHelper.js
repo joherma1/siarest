@@ -3,11 +3,9 @@
  * Executed before the specs
  */
 var config = require('../../../config/properties-test');
-//var BoardSchema = require("../../../models/boards_model").boardModel;
 var Sensor = require('../../../models/sensors_model');
-var Promise = require("bluebird");
 var mongoose = require("mongoose");
-var BoardSchema = Promise.promisifyAll(require("../../../models/boards_model").boardModel);
+var BoardSchema = require("../../../models/boards_model").boardModel;
 
 beforeEach(function (done) {
     mongoose.connect(config.db.mongodb, function (err) {
