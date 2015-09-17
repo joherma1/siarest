@@ -3,12 +3,13 @@
  * Executed before the specs
  */
 var config = require('../../../config/properties-test');
-var mongoose = require('mongoose');
-var BoardSchema = require("../../../models/boards_model").boardModel;
+//var BoardSchema = require("../../../models/boards_model").boardModel;
 var Sensor = require('../../../models/sensors_model');
+var Promise = require("bluebird");
+var mongoose = require("mongoose");
+var BoardSchema = Promise.promisifyAll(require("../../../models/boards_model").boardModel);
 
 beforeEach(function (done) {
-    console.log("[D] Starting init");
     mongoose.connect(config.db.mongodb, function (err) {
         if (err) {
             console.error('[Database] Connection error', err);
@@ -33,7 +34,6 @@ beforeEach(function (done) {
                         if (err)
                             console.error('[Database] Error initializing', err);
                         else
-                            console.log('[Database] Initialize finished');
                             done();
                     });
                 }
