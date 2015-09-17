@@ -7,6 +7,7 @@ var Sensor = require('../../../models/sensors_model');
 var mongoose = require("mongoose");
 var BoardSchema = require("../../../models/boards_model").boardModel;
 
+
 beforeEach(function (done) {
     mongoose.connect(config.db.mongodb, function (err) {
         if (err) {
