@@ -70,7 +70,7 @@ router.get('/:id/sensors', function (req, res, next) {
     Board.find({id: req.params.id}, function (err, board) {
         if (err)
             return next(err);
-        if (board)
+        if (board && board.length > 0)
             res.json(board[0].sensors);
         else
             return next(err);
@@ -95,7 +95,7 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
         .exec(function (err, board) {
             if (err)
                 return next(err);
-            if (board) {
+            if (board && board.length > 0) {
                 // --------------------
                 // TODO
                 // Promisify
@@ -132,13 +132,18 @@ router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
                                                             serialPort.drain(function (error, results) {
                                                                 serialPort.once('data', function (data) {
                                                                     var response = {"value": parseFloat(data)};
-                                                                    boardModel.saveValue(board[0], sensor, data);
-                                                                    res.json(response);
-                                                                    serialPort.close(function (error) {
-                                                                        if (error)
-                                                                            console.error("Error closing the port: " + error);
-                                                                        else
-                                                                            console.log("[ino] Connection closed with board" + board[0].id);
+                                                                    boardModel.saveValue(board[0], sensor, data, function (err) {
+                                                                        if (err) {
+                                                                            res.status(500).send({error: "[DB] " + err});
+                                                                        } else {
+                                                                            res.json(response);
+                                                                            serialPort.close(function (error) {
+                                                                                if (error)
+                                                                                    console.error("Error closing the port: " + error);
+                                                                                else
+                                                                                    console.log("[ino] Connection closed with board" + board[0].id);
+                                                                            });
+                                                                        }
                                                                     });
                                                                 });
                                                             });
