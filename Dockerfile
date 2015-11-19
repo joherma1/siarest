@@ -1,7 +1,15 @@
 FROM resin/raspberrypi-node
 MAINTAINER Jose Antonio Hernandez Martinez <joherma1@gmail.com>
 
-COPY arduino config controllers lib models spec static views /opt/siarest/
+COPY arduino /opt/siarest/arduino
+COPY config /opt/siarest/config
+COPY controllers /opt/siarest/controllers
+COPY lib /opt/siarest/lib
+COPY models /opt/siarest/models
+COPY spec /opt/siarest/spec
+COPY views /opt/siarest/views
+COPY package.json /opt/siarest/
+COPY app.js /opt/siarest/
 
 RUN cd /opt/siarest && npm install
 
