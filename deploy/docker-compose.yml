@@ -1,6 +1,5 @@
 node:
-  #build: node/.
-  build: node-x86/.
+  image: joherma1/rpi-siarest
   ports:
     - "3000:3000"
   devices:
@@ -8,7 +7,6 @@ node:
   links:
     - mongo
 mongo:
-  #build: mongo/.
-  image: mongo
+  image: joherma1/rpi-mongo
   ports:
     - "27017:27017"
