@@ -2,14 +2,14 @@
 docker build -t joherma1/rpi-mongo .
 #docker pull joherma1/rpi-mongo
 
-docker run --name mongo-sia -d joherma1/rpi-mongo
+docker run --name mongo_sia -d joherma1/rpi-mongo
 
 #Node
 docker build -t joherma1/rpi-siarest .
 #docker pull joherma1/rpi-siarest
 
-docker run -p 80:3000 --name siarest --link mongo-sia:mongo -d joherma1/rpi-siarest
-docker logs -f node-sia
+docker run -p 3000:3000 --name siarest --link mongo_sia:mongo -d joherma1/rpi-siarest
+docker logs -f siarest
 
 
 #Docker compose
