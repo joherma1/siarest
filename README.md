@@ -12,26 +12,26 @@ It is part of the SIA Architecture:
 ### How to run a siarest container on a raspberry pi
 
 #### 1. Mongo Database
-  * [Optional] Build  
+  * [Optional] Build   
   ```
   docker build -t joherma1/rpi-mongo deploy/mongo/.
   ```
-  * Run
+  * Run   
   ```
   docker run -p 27017:27017 --name mongo_sia -d joherma1/rpi-mongo
   ```
 
 
 #### 2. SIARest
-  * [Optional] Build
+  * [Optional] Build   
   ```
   docker build -t joherma1/rpi-siarest .
   ```
-  * Run
+  * Run   
   ```
   docker run --device=/dev/ttyACM0:/dev/cu.usbmodem1411 -p 3000:3000 --name siarest --link mongo_sia:mongo -d joherma1/rpi-siarest
   ```
-  * Monitor
+  * Monitor   
   ```
   docker logs -f siarest
   ```
@@ -43,11 +43,11 @@ docker run -i --link mongo_sia_test:mongo --rm joherma1/rpi-siarest /bin/bash -c
 ```
 
 ### 3. [Optional] Docker Compose
-  * Run
+  * Run   
   ```
   docker-compose up -d
   ```
-  * Monitor
+  * Monitor   
   ```
   docker-compose logs
   ```
@@ -64,21 +64,21 @@ db.boards.drop()
 ```
 
 ### Docker cheatsheet
-  * Attach ssh into container
+  * Attach ssh into container   
   ```
   docker exec -it siarest /bin/bash
   ```
-  * Debug container
+  * Debug container   
   ```
   docker run --rm -it [container_step] /bin/bash
   ```
 
 ### RaspberryPi cheatsheet
-  * Backup sd
+  * Backup sd   
   ```
   sudo dd if=/dev/rdisk1 bs=1m | gzip > ~/Desktop/pi.gz
   ```
-  * Restore backup
+  * Restore backup   
    ```
    gzip -dc ~/Desktop/pi.gz | sudo dd of=/dev/rdisk1 bs=1m
    ```
