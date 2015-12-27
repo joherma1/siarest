@@ -1,6 +1,14 @@
 {
   "name": "siarest",
-  "version": "0.0.0",
+  "version": "0.5.0",
+  "description": "Open Agricultural Information System REST API",
+  "author": "Jose Antonio Hernandez Martinez <joherma1@gmail.com>",
+  "homepage": "https://github.com/joherma1/siarest",
+  "bugs": {
+    "url": "https://github.com/joherma1/siarest/issues",
+    "email": "joherma1@gmail.com"
+  },
+  "license": "GPL-3.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
@@ -14,7 +22,7 @@
     "express": "~4.12.2",
     "mongoose": "~4.0.1",
     "morgan": "~1.5.1",
-    "serialport": "^1.7.4",
+    "serialport": "^2.0.5",
     "serve-favicon": "~2.2.0",
     "swagger-ui": "^2.1.0",
     "yamljs": "~0.2.3 "
