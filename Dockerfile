@@ -1,4 +1,4 @@
-FROM resin/raspberrypi-node
+FROM hypriot/rpi-node:4.2
 MAINTAINER Jose Antonio Hernandez Martinez <joherma1@gmail.com>
 
 COPY arduino /opt/siarest/arduino
