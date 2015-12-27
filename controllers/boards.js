@@ -5,13 +5,14 @@ var express = require('express');
 var router = express.Router();
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
+var authController = require('./auth');
 var boardModel = require("../models/boards_model");
 
 var Board = require('../models/boards_model.js').boardModel;
 var BoardDAO = require('../models/boards_model.js');
 
 /* GET /boards listing */
-router.get('/', function (req, res, next) {
+router.get('/', authController.isAuthenticated, function (req, res, next) {
     Board.find({}).select('_id id protocol uri description').exec(function (err, boards) {
         if (err)
             return next(err);
@@ -20,7 +21,7 @@ router.get('/', function (req, res, next) {
 });
 
 /* GET /boards/:id */
-router.get('/:id', function (req, res, next) {
+router.get('/:id', authController.isAuthenticated, function (req, res, next) {
     //Use the mongo native driver
     Board.find({id: req.params.id}, function (err, board) {
         if (err)
@@ -33,7 +34,7 @@ router.get('/:id', function (req, res, next) {
 });
 
 /* POST /boards */
-router.post('/', function (req, res, next) {
+router.post('/', authController.isAuthenticated, function (req, res, next) {
     if (req && req.body && req.body.id) {
         Board.create(req.body, function (err, post) {
             if (err) return next(err);
@@ -45,7 +46,7 @@ router.post('/', function (req, res, next) {
 });
 
 /* PUT /boards/:id */
-router.put('/:id', function (req, res, next) {
+router.put('/:id', authController.isAuthenticated, function (req, res, next) {
     var conditions = {id: req.params.id};
     var options = {new: true};
     Board.update(conditions, req.body, options, function (err, numAffected) {
@@ -56,7 +57,7 @@ router.put('/:id', function (req, res, next) {
 });
 
 /* DELETE /boards/:id */
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', authController.isAuthenticated, function (req, res, next) {
     Board.remove({id: req.params.id}, function (err, del) {
         if (err)
             return next(err);
@@ -66,7 +67,7 @@ router.delete('/:id', function (req, res, next) {
 
 
 /* GET /board/:id/sensors all sensors*/
-router.get('/:id/sensors', function (req, res, next) {
+router.get('/:id/sensors', authController.isAuthenticated, function (req, res, next) {
     Board.find({id: req.params.id}, function (err, board) {
         if (err)
             return next(err);
@@ -78,7 +79,7 @@ router.get('/:id/sensors', function (req, res, next) {
 });
 
 /*GET /board/:boardId/sensors/:sensorID*/
-router.get('/:boardId/sensors/:sensorId', function (req, res, next) {
+router.get('/:boardId/sensors/:sensorId', authController.isAuthenticated, function (req, res, next) {
     BoardDAO.findSensorByBoardAndId(req.params.boardId, req.params.sensorId, function (err, result) {
         if (err)
             next(err);
@@ -89,7 +90,7 @@ router.get('/:boardId/sensors/:sensorId', function (req, res, next) {
 
 /*GET /board/:boardId/sensors/:sensorID/value */
 /*Retrieve just the value */
-router.get('/:boardId/sensors/:sensorId/value', function (req, res, next) {
+router.get('/:boardId/sensors/:sensorId/value', authController.isAuthenticated, function (req, res, next) {
     Board.find({}).where('id').equals(req.params.boardId)
         .where('sensors.code').equals(req.params.sensorId)
         .exec(function (err, board) {
