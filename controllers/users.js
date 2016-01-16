@@ -1,5 +1,5 @@
 var express = require('express');
-var User = require('../models/user_model.js');
+var User = require('../models/user_model').userModel;
 var authController = require('./auth');
 
 var router = express.Router();
@@ -15,7 +15,7 @@ router.get('/', authController.isAuthenticated, function(req, res, next) {
 });
 
 /* POST user */
-router.post('/',function(req, res) {
+router.post('/', authController.isAuthenticated, function(req, res) {
   var user = new User({
     username: req.body.username,
     password: req.body.password

@@ -19,6 +19,7 @@ mongoose.connect(config.db.mongodb, function(err) {
   }
 });
 var Board = require('./models/boards_model.js');
+var User = require('./models/user_model.js');
 
 var routes = require('./controllers/index');
 var users = require('./controllers/users');
@@ -90,4 +91,5 @@ app.use(function(err, req, res, next) {
 });
 
 Board.initialize();
+User.initialize();
 module.exports = app;
