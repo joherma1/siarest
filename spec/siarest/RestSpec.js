@@ -25,7 +25,7 @@ describe('Rest API Test Suite', function () {
 
 
     describe('GET /boards', function () {
-        it('shall respond with json', function (done) {
+        xit('shall respond with json', function (done) {
             request(app).get("/boards")
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -78,7 +78,7 @@ describe('Rest API Test Suite', function () {
         })
     });
 
-    describe("GET /boards/:id", function () {
+    xdescribe("GET /boards/:id", function () {
         it("shall return all the sensors", function (done) {
             request(app)
                 .get("/boards")
@@ -103,7 +103,7 @@ describe('Rest API Test Suite', function () {
         });
     });
 
-    describe("POST /boards", function () {
+    xdescribe("POST /boards", function () {
         it("shall return 201 code and the values inserted", function (done) {
             request(app)
                 .post("/boards")
