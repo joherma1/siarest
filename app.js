@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var config = require('./config/properties');
 
+var passport = require('passport');
+
 //Database mongod --dbpath ./data/
 var mongoose = require('mongoose');// mongoose for mongodb
 mongoose.connect(config.db.mongodb, function(err) {
@@ -17,6 +19,7 @@ mongoose.connect(config.db.mongodb, function(err) {
   }
 });
 var Board = require('./models/boards_model.js');
+var User = require('./models/user_model.js');
 
 var routes = require('./controllers/index');
 var users = require('./controllers/users');
@@ -46,6 +49,9 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+// Use the passport package in our application
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
@@ -85,4 +91,5 @@ app.use(function(err, req, res, next) {
 });
 
 Board.initialize();
+User.initialize();
 module.exports = app;

@@ -1,8 +1,7 @@
 swagger: '2.0'
-
 # This is your document metadata
 info:
-  version: "0.0.1"
+  version: "0.6.0"
   title: siarest
   description: API to communicate Alreg with SIA
   termsOfService: https://github.com/joherma1/sia
@@ -10,13 +9,18 @@ info:
     name: Jose Antonio Hernandez Martinez
     url: https://github.com/joherma1
     email: joherma1@gmaill.com
-
+securityDefinitions:
+  basicAuth:
+    type: basic
+    description: HTTP Basic Authentication. Works over `HTTP` and `HTTPS`
 # Describe your paths here
 paths:
   # This is a path endpoint. Change it.
   /boards:
     # This is a HTTP operation
     get:
+      security:
+        - basicAuth: []
       tags:
         - boards
       # Describe this verb here. Note: you can use markdown
@@ -33,9 +37,11 @@ paths:
             type:  array
             items:
               $ref: '#/definitions/Board'
-              
+
   /boards/{boardId}:
     get:
+      security:
+        - basicAuth: []
       tags:
         - boards
       description: Get the board "boardId"
@@ -54,6 +60,8 @@ paths:
       
   /boards/{boardId}/sensors:
     get:
+      security:
+        - basicAuth: []
       tags:
         - boards
       description: Get all the sensors from the "boardId"
@@ -74,6 +82,8 @@ paths:
               
   /boards/{boardId}/sensors/{sensorId}:
     get:
+      security:
+        - basicAuth: []
       tags:
         - boards
       description: Get the sensor "sensorId" from the "boardId" 
@@ -98,6 +108,8 @@ paths:
             
   /boards/{boardId}/sensors/{sensorId}/value:
     get:
+      security:
+        - basicAuth: []
       tags:
         - boards
       description: Get just the sensor "sensorId" value from the "boardId" 
